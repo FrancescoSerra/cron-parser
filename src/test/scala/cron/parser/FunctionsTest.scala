@@ -21,6 +21,19 @@ class FunctionsTest extends FlatSpec with Matchers {
     )
   }
 
+  it should "tokenise a line with variable length separation spaces as fine" in {
+    val line = "17 *    * * *     cd / && run-parts --report /etc/cron.hourly"
+
+    parseLine(line) shouldBe Right(LineTokens(
+      maybeMinute = "17",
+      maybeHour = "*",
+      maybeDayOfMonth = "*",
+      maybeMonth = "*",
+      maybeDayOfWeek = "*",
+      maybeCommand = "cd / && run-parts --report /etc/cron.hourly"
+    ))
+  }
+
   it should "return an error if the line can't be tokenised in the expected number of elements" in {
     val line = "foo bar bla"
 
@@ -75,7 +88,7 @@ class FunctionsTest extends FlatSpec with Matchers {
     composeToDayOfWeek(asterisk) shouldBe Valid(DayOfWeek((0 to 7).toList))
     composeToDayOfWeek(range) shouldBe Valid(DayOfWeek((3 to 7).toList))
     composeToDayOfWeek(listOfEntries) shouldBe Valid(DayOfWeek(List(1,2,5)))
-    composeToDayOfWeek(listOfRanges) shouldBe Valid(DayOfWeek(((1 to 4).toList ++ (4 to 7).toList).toSet.toList.sorted))
+    composeToDayOfWeek(listOfRanges) shouldBe Valid(DayOfWeek(((1 to 4).toList ++ (4 to 7).toList).distinct.sorted))
     composeToDayOfWeek(rangeWithStep) shouldBe Valid(DayOfWeek(List(2,4,6)))
     composeToDayOfWeek(asteriskWithStep) shouldBe Valid(DayOfWeek((0 to 7).toList.filter(_ % 2 == 0)))
     composeToDayOfWeek(day) shouldBe Valid(DayOfWeek(List(2)))
