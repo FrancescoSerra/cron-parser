@@ -13,7 +13,7 @@ object RegExes {
   val validAsterisk = "\\*(?:/(\\d\\d?))?".r
   val validRange = "(\\d\\d?)-(\\d\\d?)(?:/(\\d\\d?))?".r
   val validList = "(\\d(?:\\d)?(?:,\\d(?:\\d)?)*)".r
-  val validListOfRanges = "(\\d\\d?-\\d\\d?(?:/\\d\\d?)?(?:,\\d\\d?-\\d\\d?(?:/\\d\\d?)?)*)".r
+  val validListOfRanges = "(\\d\\d?-\\d\\d?(?:/\\d\\d?)?|\\d(?:\\d)?(?:,\\d\\d?-\\d\\d?(?:/\\d\\d?)?|\\d(?:\\d)?)*)".r
   val validDay = s"(?i)(${listOfDays.mkString("|")})".r
   val validMonth = s"(?i)(${listOfMonths.mkString("|")})".r
 }

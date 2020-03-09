@@ -11,6 +11,7 @@ class ValidationTest extends FlatSpec with Matchers {
     val maybeElement2 = "8-11"
     val maybeElement3 = "1,2,5,9,11"
     val maybeElement4 = "0-4,8-12"
+    val maybeElement4mixed = "0-4,5,6,8-12"
     val maybeElement5 = "0-23/2"
     val maybeElement6 = "*/2"
     val maybeElement7 = "Tue"
@@ -21,6 +22,7 @@ class ValidationTest extends FlatSpec with Matchers {
     validateFormat(maybeElement2) shouldBe Right(Range(8,11,None))
     validateFormat(maybeElement3) shouldBe Right(ListOfEntries(List(Entry(1),Entry(2),Entry(5),Entry(9),Entry(11))))
     validateFormat(maybeElement4) shouldBe Right(ListOfRanges(List(Range(0,4),Range(8,12))))
+    validateFormat(maybeElement4mixed) shouldBe Right(ListOfRanges(List(Range(0,4),Entry(5),Entry(6),Range(8,12))))
     validateFormat(maybeElement5) shouldBe Right(Range(0,23,Some(2)))
     validateFormat(maybeElement6) shouldBe Right(Asterisk(Some(2)))
     validateFormat(maybeElement7) shouldBe Right(LiteralDay("Tue"))
