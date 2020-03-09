@@ -5,11 +5,13 @@ lazy val cronparser = (project in file(".")).settings(
   version := "0.1",
   scalaVersion := "2.13.1",
   libraryDependencies ++= Seq(
-    "org.scalactic" %% "scalactic"   % "3.0.8" % "test",
-    "org.scalatest" %% "scalatest"   % "3.0.8" % "test",
+
     "org.typelevel" %% "cats-core"   % catsVersion,
     "org.typelevel" %% "cats-macros" % catsVersion,
-    "org.typelevel" %% "cats-kernel" % catsVersion
+    "org.typelevel" %% "cats-kernel" % catsVersion,
+    "org.scalactic" %% "scalactic"   % "3.0.8" % "test",
+    "org.scalatest" %% "scalatest"   % "3.0.8" % "test",
+    "org.scalacheck" %% "scalacheck" % "1.14.1" % "test"
   ),
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3")
 )
