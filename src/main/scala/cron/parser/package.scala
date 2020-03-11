@@ -107,4 +107,27 @@ package object parser {
   type ValidationResult[A] = ValidatedNec[Error, A]
   type Result[A,B] = Kleisli[Either[Error,*],A,B]
   type ErrorOr[A] = Either[NonEmptyChain[Error],A]
+
+  sealed trait Day extends Product with Serializable
+  final case object Sun extends Day
+  final case object Mon extends Day
+  final case object Tue extends Day
+  final case object Wed extends Day
+  final case object Thu extends Day
+  final case object Fri extends Day
+  final case object Sat extends Day
+
+  sealed trait MonthLiteral extends Product with Serializable
+  final case object Jan extends MonthLiteral
+  final case object Feb extends MonthLiteral
+  final case object Mar extends MonthLiteral
+  final case object Apr extends MonthLiteral
+  final case object May extends MonthLiteral
+  final case object Jun extends MonthLiteral
+  final case object Jul extends MonthLiteral
+  final case object Aug extends MonthLiteral
+  final case object Sep extends MonthLiteral
+  final case object Oct extends MonthLiteral
+  final case object Nov extends MonthLiteral
+  final case object Dec extends MonthLiteral
 }

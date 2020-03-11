@@ -64,13 +64,13 @@ class RegExesTest extends FlatSpec with Matchers with PropertyChecks {
   }
 
   "validDay" should "match any possible day of the week or reject anything else" in
-    forAll(genDayString) { day: String =>
-      validDay.matches(day) shouldBe true
+    forAll { days: List[Day] =>
+      validDay.matches(days.mkString(",")) shouldBe true
     }
 
   "validMonth" should "match any month or reject anything else" in
-    forAll(genMonthString) { month: String =>
-      validMonth.matches(month) shouldBe true
+    forAll { months: List[MonthLiteral] =>
+      validMonth.matches(months.mkString(",")) shouldBe true
     }
 
 }

@@ -16,7 +16,12 @@ object Generators {
   val genNonEmptyListOfInt: Gen[List[Int]] = Gen.nonEmptyListOf[Int](Arbitrary.arbInt.arbitrary)
   val genNonEmptyListOfRange: Gen[List[Range]] = Gen.nonEmptyListOf[Range](rangeGenerator)
 
-  val genDayString: Gen[String] = Gen.oneOf(listOfDays)
-  val genMonthString: Gen[String] = Gen.oneOf(listOfMonths)
+  val genDayString: Gen[Day] = Gen.oneOf(listOfDays)
+  val genMonthString: Gen[MonthLiteral] = Gen.oneOf(listOfMonths)
 
+  val genNonEmptyListOfDays: Gen[List[Day]] = Gen.nonEmptyListOf[Day](genDayString).map(_.distinct)
+  val genNonEmptyListOfMonths: Gen[List[MonthLiteral]] = Gen.nonEmptyListOf[MonthLiteral](genMonthString).map(_.distinct)
+
+  implicit val arbitraryListOfDays: Arbitrary[List[Day]] = Arbitrary(genNonEmptyListOfDays)
+  implicit val arbitraryListOfMonths: Arbitrary[List[MonthLiteral]] = Arbitrary(genNonEmptyListOfMonths)
 }
