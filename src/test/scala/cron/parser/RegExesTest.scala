@@ -48,7 +48,7 @@ class RegExesTest extends FlatSpec with Matchers with PropertyChecks {
         validList.matches(list.mkString(",")) shouldBe false
   }
 
-  "validListOfRanges" should "match a list of ranges and entries or reject anything else" in
+  "validListOfRanges" should "match a list of ranges and optionally entries or reject anything else" in
     forAll(genNonEmptyListOfInt,genNonEmptyListOfRange) { (entries: List[Int], ranges: List[Range]) =>
 
     val entriesFirst = entries.zip(ranges).mkString(",")
@@ -57,6 +57,7 @@ class RegExesTest extends FlatSpec with Matchers with PropertyChecks {
       ranges.forall { case Range(a, b, c) => withinHundred(a) && withinHundred(b) && c.forall(withinHundred) }) {
       validListOfRanges.matches(entriesFirst) shouldBe true
       validListOfRanges.matches(rangesFirst) shouldBe true
+      validListOfRanges.matches("0-4,8-12,5,6") shouldBe true
     } else {
       validListOfRanges.matches(entriesFirst) shouldBe false
       validListOfRanges.matches(rangesFirst) shouldBe false
