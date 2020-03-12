@@ -27,6 +27,6 @@ object RegExes {
   val validRange = "(\\d\\d?)-(\\d\\d?)(?:/(\\d\\d?))?".r
   val validList = "(\\d(?:\\d)?(?:,\\d(?:\\d)?)*)".r
   val validListOfRanges = "(\\d\\d?-\\d\\d?(?:/\\d\\d?)?|\\d(?:\\d)?(?:,\\d\\d?-\\d\\d?(?:/\\d\\d?)?|\\d(?:\\d)?)*)".r
-  val validDay = s"(?i)(${listOfDaysSundayTwice.mkString("|")})+".r
+  val validDay = s"(?i)((?:${listOfDays.mkString("|")})(?:,(?:${listOfDays.mkString("|")}))*)".r
   val validMonth = s"(?i)(${listOfMonths.mkString("|")})".r
 }
