@@ -15,7 +15,6 @@ package object validation {
   * */
   val validateFormat: Result[String,FieldType] = Kleisli { field =>
     def validateIn(input: String): Either[InvalidFormat,FieldType] = {
-      println("my input is " + input)
       input match {
         case validEntry(entry) => Right(Entry(entry.toInt))
         case validAsterisk(step) =>
@@ -31,7 +30,6 @@ package object validation {
           else Left(InvalidFormat(s"Invalid range $initVal-$endVal${Option(step).map(v => s"/$v").getOrElse("")}"))
         case validList(list) => Right(ListOfEntries(list.split(",").toList.map(e => Entry(e.toInt))))
         case validListOfRanges(listOfRanges) => {
-          println(s"*********** list of ranges: $listOfRanges")
           listOfRanges.split(",").toList.collect(validateIn(_)).map {
             case Right(rangeable: Rangeable) => rangeable.validNec[InvalidFormat]
             case Right(other) => other.invalidNec[Rangeable]
@@ -64,7 +62,7 @@ package object validation {
       case Range(start, end, maybeStep) if start >= min && end <= max =>
         Right(impl(maybeStep.map(step => (start to end).toList.filter(a => a % step == 0 || a == 0)).getOrElse((start to end).toList)))
       case l@ListOfEntries(entries) =>
-        if (entries.map(_.value).forall(e => e >= min && e <= max)) Right(impl(entries.map(_.value).toSet.toList.sorted))
+        if (entries.map(_.value).forall(e => e >= min && e <= max)) Right(impl(entries.map(_.value).distinct.sorted))
         else Left(IllegalValue(s"$l is not a valid $stringRepr value"))
       case ListOfRanges(ranges) =>
         if (ranges.forall(r => r.start >= min && r.end <= max))

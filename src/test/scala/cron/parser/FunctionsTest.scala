@@ -7,7 +7,7 @@ import cats.data.Validated.Valid
 import cats.syntax.validated._
 
 class FunctionsTest extends FlatSpec with Matchers {
-  "parseLine" should "return the tokenised parts of a cron line" in {
+  "parseLine" should "return the tokenized parts of a cron line" in {
     val line = "*/15 0 1,15 * 1-5 /usr/bin/find"
 
     parseLine(line) shouldBe Right(LineTokens(
@@ -21,7 +21,7 @@ class FunctionsTest extends FlatSpec with Matchers {
     )
   }
 
-  it should "tokenise a line with variable length separation spaces as fine" in {
+  it should "tokenize a line with variable length separation spaces as fine" in {
     val line = "17 *    * * *     cd / && run-parts --report /etc/cron.hourly"
 
     parseLine(line) shouldBe Right(LineTokens(
@@ -34,7 +34,7 @@ class FunctionsTest extends FlatSpec with Matchers {
     ))
   }
 
-  it should "return an error if the line can't be tokenised in the expected number of elements" in {
+  it should "return an error if the line can't be tokenized in the expected number of elements" in {
     val line = "foo bar bla"
 
     parseLine(line) shouldBe Left(ParsingError("input couldn't be parsed into the expected tokens: foo bar bla"))

@@ -10,7 +10,7 @@ class ValidationTest extends FlatSpec with Matchers {
     val maybeElement1 = "*"
     val maybeElement2 = "8-11"
     val maybeElement3 = "1,2,5,9,11"
-    val maybeElement4 = "0-4,8-12"
+    val maybeElement4 = "0-4,8-12,13-17"
     val maybeElement4mixed = "0-4,5,6,8-12"
     val maybeElement5 = "0-23/2"
     val maybeElement6 = "*/2"
@@ -21,7 +21,7 @@ class ValidationTest extends FlatSpec with Matchers {
     validateFormat(maybeElement1) shouldBe Right(Asterisk(None))
     validateFormat(maybeElement2) shouldBe Right(Range(8,11,None))
     validateFormat(maybeElement3) shouldBe Right(ListOfEntries(List(Entry(1),Entry(2),Entry(5),Entry(9),Entry(11))))
-    validateFormat(maybeElement4) shouldBe Right(ListOfRanges(List(Range(0,4),Range(8,12))))
+    validateFormat(maybeElement4) shouldBe Right(ListOfRanges(List(Range(0,4),Range(8,12),Range(13,17))))
     validateFormat(maybeElement4mixed) shouldBe Right(ListOfRanges(List(Range(0,4),Entry(5),Entry(6),Range(8,12))))
     validateFormat(maybeElement5) shouldBe Right(Range(0,23,Some(2)))
     validateFormat(maybeElement6) shouldBe Right(Asterisk(Some(2)))
@@ -33,10 +33,9 @@ class ValidationTest extends FlatSpec with Matchers {
     validateFormat("foo") shouldBe Left(InvalidFormat("foo is not in a valid cron field format"))
     validateFormat("10-5") shouldBe Left(InvalidFormat("Invalid range 10-5"))
     validateFormat("5-10/0") shouldBe Left(InvalidFormat("Invalid range 5-10/0"))
-    validateFormat("1-4,8,10-14/2") shouldBe Left(InvalidFormat("1-4,8,10-14/2 is not in a valid cron field format"))
   }
 
-  "validateMinuteLenght" should "return a valid list of minutes if the field contains legal values" in {
+  "validateMinuteLength" should "return a valid list of minutes if the field contains legal values" in {
     val entry = Entry(1)
     val asterisk = Asterisk(None)
     val range = Range(8,11,None)
