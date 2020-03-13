@@ -32,7 +32,9 @@ package object parser {
     val maybeStep = None
     override def toString: String = value.toString
   }
-  final case class Asterisk(maybeStep: Option[Int] = None) extends FieldType
+  final case class Asterisk(maybeStep: Option[Int] = None) extends FieldType {
+    override def toString: String = s"*${maybeStep.map(v => s"/$v").getOrElse("")}"
+  }
   final case class Range(start: Int, end: Int, maybeStep: Option[Int] = None) extends FieldType with Rangeable {
     override def toString: String = s"$start-$end" + maybeStep.map(v => s"/$v").getOrElse("")
   }
