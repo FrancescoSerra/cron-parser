@@ -1,15 +1,12 @@
 package cron.parser
 
 import RegExes._
-import org.scalatest.{FlatSpec, Matchers}
-import org.scalatest.prop.PropertyChecks
 import Generators._
-import org.scalacheck.Gen
-import org.scalacheck._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-import scala.util.matching.UnanchoredRegex
-
-class RegExesTest extends FlatSpec with Matchers with PropertyChecks {
+class RegExesTest extends AnyFlatSpec with Matchers with ScalaCheckPropertyChecks {
 
   val withinHundred: Int => Boolean = i => 0 <= i && i <= 99
 
