@@ -43,7 +43,7 @@ object Functions {
     validateFormat(entry) match {
       case Left(error) => error.invalidNec[Month]
       case Right(m) => m match {
-        case LiteralMonth(month) => Month(listOfMonths.zipWithIndex.filter { case (m, _) => m.equalsIgnoreCase(month) }.map(_._2 + 1)).validNec
+        case LiteralMonth(month) => Month(listOfMonths.map(_.toString).zipWithIndex.filter { case (m, _) => m.equalsIgnoreCase(month) }.map(_._2 + 1)).validNec
         case other => validate[Month](1, 12, "month").run(other).toValidatedNec
       }
     }
@@ -56,7 +56,7 @@ object Functions {
     validateFormat(entry) match {
       case Left(error) => error.invalidNec[DayOfWeek]
       case Right(d) => d match {
-        case LiteralDay(day) => DayOfWeek(listOfDays.zipWithIndex.filter { case (d,_) => d.equalsIgnoreCase(day)}.map(_._2)).validNec
+        case LiteralDay(day) => DayOfWeek(listOfDaysSundayTwice.map(_.toString).zipWithIndex.filter { case (d,_) => d.equalsIgnoreCase(day)}.map(_._2)).validNec
         case other => validate[DayOfWeek](0,7,"day of week").run(other).toValidatedNec
       }
     }
