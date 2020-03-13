@@ -1,12 +1,13 @@
 package cron.parser
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.matchers.should.Matchers
 import Functions._
 import cats.data.Chain
 import cats.data.Validated.Valid
 import cats.syntax.validated._
+import org.scalatest.flatspec.AnyFlatSpec
 
-class FunctionsTest extends FlatSpec with Matchers {
+class FunctionsTest extends AnyFlatSpec with Matchers {
   "parseLine" should "return the tokenized parts of a cron line" in {
     val line = "*/15 0 1,15 * 1-5 /usr/bin/find"
 

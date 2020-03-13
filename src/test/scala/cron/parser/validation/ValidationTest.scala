@@ -1,9 +1,10 @@
 package cron.parser.validation
 
 import cron.parser.{Asterisk, DayOfMonth, Entry, Hour, IllegalValue, InvalidFormat, ListOfEntries, ListOfRanges, LiteralDay, LiteralMonth, Minute, Range}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ValidationTest extends FlatSpec with Matchers {
+class ValidationTest extends AnyFlatSpec with Matchers {
 
   "validateFormat" should "return a success if the format of a token is valid" in {
     val maybeElement0 = "1"
