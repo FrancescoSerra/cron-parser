@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/FrancescoSerra/cron-parser.svg?branch=master)](https://travis-ci.com/FrancescoSerra/cron-parser)
+
 # Cron expressions parser
 
 The goal of this project is to build a cron expression parser that can parse a cron entry string, print a table to the console and expand each field to show the times at which it will run.
