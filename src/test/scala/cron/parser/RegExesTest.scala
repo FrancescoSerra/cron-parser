@@ -39,7 +39,8 @@ class RegExesTest extends AnyFlatSpec with Matchers with ScalaCheckPropertyCheck
         validList.matches(list.mkString(",")) shouldBe false
   }
 
-  "validListOfRanges" should "match a list of ranges and optionally entries or reject anything else" in forAll { (entries: List[Entry], ranges: List[Range]) =>
+  "validListOfRanges" should "match a list of ranges and optionally entries or reject anything else" in
+    forAll(genNonEmptyListOfEntry,genNonEmptyListOfRange) { (entries: List[Entry], ranges: List[Range]) =>
 
     val entriesFirst = entries.zip(ranges).mkString(",")
     val rangesFirst = ranges.zip(entries).mkString(",")
