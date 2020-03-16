@@ -40,25 +40,13 @@ class RegExesTest extends AnyFlatSpec with Matchers with ScalaCheckPropertyCheck
   }
 
   "validListOfRanges" should "match a list of ranges and optionally entries or reject anything else" in
-    forAll(genNonEmptyListOfEntry,genNonEmptyListOfRange) { (entries: List[Entry], ranges: List[Range]) =>
+    forAll { ranges: List[Rangeable] =>
 
-    val entriesFirst = entries.zip(ranges).mkString(",")
-    val rangesFirst = ranges.zip(entries).mkString(",")
-
-    if (ranges.forall { case Range(a, b, c) => withinHundred(a) && withinHundred(b) && c.forall(withinHundred) }) {
-      validListOfRanges.matches(ranges.mkString(",")) shouldBe true
-      if (entries.map(_.value).forall(withinHundred)) {
-        validListOfRanges.matches(entriesFirst) shouldBe true
-        validListOfRanges.matches(rangesFirst) shouldBe true
-      } else {
-        validListOfRanges.matches(entriesFirst) shouldBe false
-        validListOfRanges.matches(rangesFirst) shouldBe false
-      }
-    } else {
-      validListOfRanges.matches(ranges.mkString(",")) shouldBe false
-      validListOfRanges.matches(entriesFirst) shouldBe false
-      validListOfRanges.matches(rangesFirst) shouldBe false
-    }
+    if (ranges.forall {
+      case Range(a, b, c) => withinHundred(a) && withinHundred(b) && (c.forall(withinHundred) || c.isEmpty)
+      case Entry(value) => withinHundred(value)
+    }) validListOfRanges.matches(ranges.toString) shouldBe true
+    else validListOfRanges.matches(ranges.toString) shouldBe false
   }
 
   "validDay" should "match any possible day of the week or reject anything else" in forAll { days: List[Day] =>
