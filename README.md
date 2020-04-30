@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/FrancescoSerra/cron-parser.svg?branch=master)](https://travis-ci.com/FrancescoSerra/cron-parser)
+[![Coverage Status](https://coveralls.io/repos/github/FrancescoSerra/cron-parser/badge.svg?branch=master)](https://coveralls.io/github/FrancescoSerra/cron-parser?branch=master)
 
 # Cron expressions parser
 
