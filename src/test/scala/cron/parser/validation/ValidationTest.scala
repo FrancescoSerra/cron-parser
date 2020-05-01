@@ -34,6 +34,7 @@ class ValidationTest extends AnyFlatSpec with Matchers {
     validateFormat("foo") shouldBe Left(InvalidFormat("foo is not in a valid cron field format"))
     validateFormat("10-5") shouldBe Left(InvalidFormat("Invalid range 10-5"))
     validateFormat("5-10/0") shouldBe Left(InvalidFormat("Invalid range 5-10/0"))
+    validateFormat("2-4,5-10/0") shouldBe Left(InvalidFormat("Invalid range 5-10/0"))
   }
 
   "validateMinuteLength" should "return a valid list of minutes if the field contains legal values" in {
