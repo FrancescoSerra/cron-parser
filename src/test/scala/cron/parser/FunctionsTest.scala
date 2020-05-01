@@ -67,12 +67,14 @@ class FunctionsTest extends AnyFlatSpec with Matchers {
     val listOfEntries = "61,62"
     val listOfRanges = "0-4,0-99/2"
     val day = "Tue"
+    val invalidMonth = "Junezzzz"
 
     composeToMonth(entry) shouldBe IllegalValue("60 is not a valid month value").invalidNec
     composeToMonth(range) shouldBe IllegalValue("8-80 is not a valid month value").invalidNec
     composeToMonth(listOfEntries) shouldBe IllegalValue("61,62 is not a valid month value").invalidNec
     composeToMonth(listOfRanges) shouldBe IllegalValue("0-4,0-99/2 is not a valid month value").invalidNec
     composeToMonth(day) shouldBe IllegalValue("Tue is not a valid month value").invalidNec
+    composeToMonth(invalidMonth) shouldBe InvalidFormat("Junezzzz is not in a valid cron field format").invalidNec
   }
 
   "composeToDayOfWeek" should "return a valid list of days of week if the field contains legal values" in {
@@ -101,12 +103,14 @@ class FunctionsTest extends AnyFlatSpec with Matchers {
     val listOfEntries = "61,62"
     val listOfRanges = "0-4,0-99/2"
     val month = "Nov"
+    val invalidDay = "Monsday"
 
     composeToDayOfWeek(entry) shouldBe IllegalValue("60 is not a valid day of week value").invalidNec
     composeToDayOfWeek(range) shouldBe IllegalValue("8-80 is not a valid day of week value").invalidNec
     composeToDayOfWeek(listOfEntries) shouldBe IllegalValue("61,62 is not a valid day of week value").invalidNec
     composeToDayOfWeek(listOfRanges) shouldBe IllegalValue("0-4,0-99/2 is not a valid day of week value").invalidNec
     composeToDayOfWeek(month) shouldBe IllegalValue("Nov is not a valid day of week value").invalidNec
+    composeToDayOfWeek(invalidDay) shouldBe InvalidFormat("Monsday is not in a valid cron field format").invalidNec
   }
 
   "mainFunction" should "return a CronLine if all the validations are Ok" in {
