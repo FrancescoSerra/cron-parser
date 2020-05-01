@@ -17,4 +17,4 @@ lazy val cronparser = (project in file(".")).settings(
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3")
 )
 
-
+scapegoatVersion in ThisBuild := "1.4.3"

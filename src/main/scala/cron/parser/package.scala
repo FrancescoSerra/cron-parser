@@ -10,7 +10,7 @@ package object parser {
 
   type ValidatedTo[A] = Result[FieldType,A]
 
-  case class LineTokens(
+  final case class LineTokens(
                          maybeMinute: String,
                          maybeHour: String,
                          maybeDayOfMonth: String,
