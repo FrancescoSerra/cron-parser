@@ -9,6 +9,7 @@ lazy val cronparser = (project in file(".")).settings(
     "org.typelevel" %% "cats-core"   % catsVersion,
     "org.typelevel" %% "cats-macros" % catsVersion,
     "org.typelevel" %% "cats-kernel" % catsVersion,
+    "org.typelevel" %% "cats-effect" % "2.1.3" withSources() withJavadoc(),
     "org.scalactic" %% "scalactic"   % "3.0.8" % "test",
     "org.scalatest" %% "scalatest"   % "3.0.8" % "test",
     "org.scalatestplus" %% "scalatestplus-scalacheck"   % "3.1.0.0-RC2" % "test",

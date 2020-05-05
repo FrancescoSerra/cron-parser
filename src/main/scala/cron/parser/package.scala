@@ -20,8 +20,8 @@ package object parser {
                        )
 
 
-  sealed trait FieldType
-  sealed trait Rangeable {
+  sealed trait FieldType extends Product with Serializable
+  sealed trait Rangeable extends Product with Serializable {
     def start: Int
     def end: Int
     def maybeStep: Option[Int]
@@ -50,7 +50,7 @@ package object parser {
   }
 
   /* Field hierarchy */
-  sealed trait Field extends Any
+  sealed trait Field extends Any with Product with Serializable
 
   final case class Minute(listOfMinutes: List[Int]) extends Field {
     override def toString: String = listOfMinutes.mkString(" ")
