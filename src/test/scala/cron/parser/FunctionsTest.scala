@@ -2,7 +2,7 @@ package cron.parser
 
 import org.scalatest.matchers.should.Matchers
 import Functions._
-import cats.data.Chain
+import cats.data.{Chain, NonEmptyList}
 import cats.data.Validated.Valid
 import cats.syntax.validated._
 import org.scalatest.flatspec.AnyFlatSpec
@@ -69,12 +69,12 @@ class FunctionsTest extends AnyFlatSpec with Matchers {
     val day = "Tue"
     val invalidMonth = "Junezzzz"
 
-    composeToMonth(entry) shouldBe IllegalValue("60 is not a valid month value").invalidNec
-    composeToMonth(range) shouldBe IllegalValue("8-80 is not a valid month value").invalidNec
-    composeToMonth(listOfEntries) shouldBe IllegalValue("61,62 is not a valid month value").invalidNec
-    composeToMonth(listOfRanges) shouldBe IllegalValue("0-4,0-99/2 is not a valid month value").invalidNec
-    composeToMonth(day) shouldBe IllegalValue("Tue is not a valid month value").invalidNec
-    composeToMonth(invalidMonth) shouldBe InvalidFormat("Junezzzz is not in a valid cron field format").invalidNec
+    composeToMonth(entry) shouldBe IllegalValue("60 is not a valid month value").invalidNel
+    composeToMonth(range) shouldBe IllegalValue("8-80 is not a valid month value").invalidNel
+    composeToMonth(listOfEntries) shouldBe IllegalValue("61,62 is not a valid month value").invalidNel
+    composeToMonth(listOfRanges) shouldBe IllegalValue("0-4,0-99/2 is not a valid month value").invalidNel
+    composeToMonth(day) shouldBe IllegalValue("Tue is not a valid month value").invalidNel
+    composeToMonth(invalidMonth) shouldBe InvalidFormat("Junezzzz is not in a valid cron field format").invalidNel
   }
 
   "composeToDayOfWeek" should "return a valid list of days of week if the field contains legal values" in {
@@ -105,12 +105,12 @@ class FunctionsTest extends AnyFlatSpec with Matchers {
     val month = "Nov"
     val invalidDay = "Monsday"
 
-    composeToDayOfWeek(entry) shouldBe IllegalValue("60 is not a valid day of week value").invalidNec
-    composeToDayOfWeek(range) shouldBe IllegalValue("8-80 is not a valid day of week value").invalidNec
-    composeToDayOfWeek(listOfEntries) shouldBe IllegalValue("61,62 is not a valid day of week value").invalidNec
-    composeToDayOfWeek(listOfRanges) shouldBe IllegalValue("0-4,0-99/2 is not a valid day of week value").invalidNec
-    composeToDayOfWeek(month) shouldBe IllegalValue("Nov is not a valid day of week value").invalidNec
-    composeToDayOfWeek(invalidDay) shouldBe InvalidFormat("Monsday is not in a valid cron field format").invalidNec
+    composeToDayOfWeek(entry) shouldBe IllegalValue("60 is not a valid day of week value").invalidNel
+    composeToDayOfWeek(range) shouldBe IllegalValue("8-80 is not a valid day of week value").invalidNel
+    composeToDayOfWeek(listOfEntries) shouldBe IllegalValue("61,62 is not a valid day of week value").invalidNel
+    composeToDayOfWeek(listOfRanges) shouldBe IllegalValue("0-4,0-99/2 is not a valid day of week value").invalidNel
+    composeToDayOfWeek(month) shouldBe IllegalValue("Nov is not a valid day of week value").invalidNel
+    composeToDayOfWeek(invalidDay) shouldBe InvalidFormat("Monsday is not in a valid cron field format").invalidNel
   }
 
   "mainFunction" should "return a CronLine if all the validations are Ok" in {
@@ -177,7 +177,7 @@ class FunctionsTest extends AnyFlatSpec with Matchers {
 
     mainFunction(line) shouldBe
       Left(
-          Chain(
+          NonEmptyList.of(
             InvalidFormat("*/0 is not in a valid cron field format"),
             IllegalValue("50 is not a valid hour value"),
             IllegalValue("1,32 is not a valid day of month value"),

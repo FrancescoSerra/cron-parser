@@ -1,7 +1,7 @@
 package cron.parser
 
 import Functions._
-import cats.data.NonEmptyChain
+import cats.data.{NonEmptyChain, NonEmptyList}
 import cats.effect.{ExitCode, IO, IOApp}
 import cats.implicits._
 
@@ -10,19 +10,20 @@ case object SuccessResult extends RunResult
 case object ErrorResult extends RunResult
 
 class MainClass extends IOApp {
-  type Compound = Either[String,NonEmptyChain[(String,Field)]]
+  type Compound = Either[String,NonEmptyList[(String,Field)]]
 
   val translate: Option[String] => Compound = input =>
-    input.map(line => mainFunction(line).map { cronLine =>
-      NonEmptyChain(
-        ("minute", cronLine.minute),
-        ("hour", cronLine.hour),
-        ("day of month", cronLine.dayOfMonth),
-        ("month", cronLine.month),
-        ("day of week", cronLine.dayOfWeek),
-        ("command", cronLine.command)
-      )
-    }.leftMap(_.toNonEmptyList.toList.mkString(","))).getOrElse("Please provide a cron line to interpret".asLeft)
+    input.map(line => mainFunction(line).map(cronLine => {
+      import cronLine._
+      NonEmptyList.of(
+        ("minute", minute),
+        ("hour", hour),
+        ("day of month", dayOfMonth),
+        ("month", month),
+        ("day of week", dayOfWeek),
+        ("command", command)
+      )}
+    ).leftMap(_.toList.mkString(","))).getOrElse("Please provide a cron line to interpret".asLeft)
 
   val printRes: Compound => IO[RunResult] = compound =>
     compound.map { vals =>

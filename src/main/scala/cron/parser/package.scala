@@ -1,6 +1,6 @@
 package cron
 
-import cats.data.{Kleisli, NonEmptyChain, ValidatedNec}
+import cats.data.{Kleisli, NonEmptyList, ValidatedNel}
 
 package object parser {
   /* domain entities */
@@ -106,9 +106,9 @@ package object parser {
   final case class IllegalValue(message: String) extends Error
 
   /* functional type aliases */
-  type ValidationResult[A] = ValidatedNec[Error, A]
+  type ValidationResult[A] = ValidatedNel[Error, A]
   type Result[A,B] = Kleisli[Either[Error,*],A,B]
-  type ErrorOr[A] = Either[NonEmptyChain[Error],A]
+  type ErrorOr[A] = Either[NonEmptyList[Error],A]
 
   sealed trait Day extends Product with Serializable
   final case object Sun extends Day

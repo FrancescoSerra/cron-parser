@@ -4,7 +4,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import cats.syntax.option._
 import cats.syntax.either._
-import cats.data.NonEmptyChain
+import cats.data.{NonEmptyChain, NonEmptyList}
 import cats.effect.{ExitCode, IO}
 
 class MainClassTest extends AnyFlatSpec with Matchers {
@@ -16,7 +16,7 @@ class MainClassTest extends AnyFlatSpec with Matchers {
 
   it should "return a valid list of tuples if a valid argument is passed in" in {
     main.translate("25 6 * * * root /usr/sbin/anacron".some) shouldBe
-      NonEmptyChain(
+      NonEmptyList.of(
         ("minute", Minute(List(25))),
         ("hour", Hour(List(6))),
         ("day of month", DayOfMonth((1 to 31).toList)),
@@ -32,7 +32,7 @@ class MainClassTest extends AnyFlatSpec with Matchers {
   }
 
   "MainClass.printRes" should "print the right output if the input is a Right" in {
-    main.printRes(Right(NonEmptyChain(("minute", Minute(List(1)))))).unsafeRunSync shouldBe
+    main.printRes(Right(NonEmptyList.one(("minute", Minute(List(1)))))).unsafeRunSync shouldBe
       SuccessResult
   }
 
