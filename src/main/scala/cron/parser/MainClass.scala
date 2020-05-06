@@ -24,17 +24,14 @@ class MainClass extends IOApp {
       )
     }.leftMap(_.toNonEmptyList.toList.mkString(","))).getOrElse("Please provide a cron line to interpret".asLeft)
 
-  val printRes: Compound => IO[RunResult] = {
-    case Right(vals) => for {
-      _ <- IO(vals.toNonEmptyList.toList.foreach { case (name,field) =>
-              printf("%-14s %s\n", name, field)
-            })
-    } yield SuccessResult
-
-    case Left(err) => for {
-      _ <- IO(println(err))
-    } yield ErrorResult
-  }
+  val printRes: Compound => IO[RunResult] = compound =>
+    compound.map { vals =>
+      IO(vals.toNonEmptyList.toList.foreach { case (name,field) =>
+        printf("%-14s %s\n", name, field)
+      }) *> IO.pure(SuccessResult)
+    }.valueOr { err =>
+      IO(println(err)) *> IO.pure(ErrorResult)
+    }
 
 
   override def run(args: List[String]): IO[ExitCode] = {
