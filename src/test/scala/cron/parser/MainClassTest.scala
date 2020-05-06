@@ -11,11 +11,11 @@ class MainClassTest extends AnyFlatSpec with Matchers {
   val main = new MainClass
 
   "MainClass.main" should "return an error string if no argument is passed to it" in {
-    main.mainFunc(None) shouldBe "Please provide a cron line to interpret".asLeft
+    main.translate(None) shouldBe "Please provide a cron line to interpret".asLeft
   }
 
   it should "return a valid list of tuples if a valid argument is passed in" in {
-    main.mainFunc("25 6 * * * root /usr/sbin/anacron".some) shouldBe
+    main.translate("25 6 * * * root /usr/sbin/anacron".some) shouldBe
       NonEmptyChain(
         ("minute", Minute(List(25))),
         ("hour", Hour(List(6))),
@@ -27,7 +27,7 @@ class MainClassTest extends AnyFlatSpec with Matchers {
   }
 
   it should "return an error if an invalid argument is passed in" in {
-    main.mainFunc("invalid".some) shouldBe
+    main.translate("invalid".some) shouldBe
       "input couldn't be parsed into the expected tokens: invalid".asLeft
   }
 

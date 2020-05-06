@@ -29,13 +29,12 @@ package object validation {
           if (endVal > initVal && (step != "0")) Right(Range(initVal, endVal, Option[String](step).map(_.toInt)))
           else Left(InvalidFormat(s"Invalid range $initVal-$endVal${Option(step).map(v => s"/$v").getOrElse("")}"))
         case validList(list) => Right(ListOfEntries(list.split(",").toList.map(e => Entry(e.toInt))))
-        case validListOfRanges(listOfRanges) => {
+        case validListOfRanges(listOfRanges) =>
           listOfRanges.split(",").toList.collect(validateIn(_)).map {
             case Right(rangeable: Rangeable) => rangeable.validNec[InvalidFormat]
             case Right(other) => other.invalidNec[Rangeable]
             case Left(invalidFormat) => invalidFormat.invalidNec[Rangeable]
           }.sequence.toEither.map(ListOfRanges).leftMap(invalid => InvalidFormat(invalid.toList.mkString))
-        }
         case validDay(day) => Right(LiteralDay(day))
         case validMonth(month) => Right(LiteralMonth(month))
         case token => Left(InvalidFormat(s"$token is not in a valid cron field format"))
