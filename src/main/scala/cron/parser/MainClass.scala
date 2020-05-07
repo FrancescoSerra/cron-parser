@@ -27,7 +27,7 @@ class MainClass extends IOApp {
 
   val printRes: Compound => IO[RunResult] = compound =>
     compound.map { vals =>
-      vals.toNonEmptyList.toList.map { case (name, field) =>
+      vals.toList.map { case (name, field) =>
         IO(printf("%-14s %s\n", name, field))
       }.sequence *> IO.pure(SuccessResult)
     }.valueOr { err =>
