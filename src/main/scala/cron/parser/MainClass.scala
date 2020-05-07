@@ -1,7 +1,7 @@
 package cron.parser
 
 import Functions._
-import cats.data.{NonEmptyChain, NonEmptyList}
+import cats.data.NonEmptyList
 import cats.effect.{ExitCode, IO, IOApp}
 import cats.implicits._
 
@@ -27,9 +27,9 @@ class MainClass extends IOApp {
 
   val printRes: Compound => IO[RunResult] = compound =>
     compound.map { vals =>
-      vals.toList.map { case (name, field) =>
+      vals.toList.traverse { case (name, field) =>
         IO(printf("%-14s %s\n", name, field))
-      }.sequence *> IO.pure(SuccessResult)
+      } *> IO.pure(SuccessResult)
     }.valueOr { err =>
       IO(println(err)) *> IO.pure(ErrorResult)
     }
