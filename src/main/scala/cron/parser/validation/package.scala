@@ -52,26 +52,23 @@ package object validation {
 * Either context which represents the failure in validating the values for that field, or the field itself
 * Requires an instance of Buildable in scope, in order to build an instance of the field - represented by the generic type parameter A
 * */
-  def validate[A: Buildable](min: Int, max: Int, stringRepr: String): ValidatedTo[A] = Kleisli( field => {
-    val impl = implicitly[Buildable[A]]
-    field match {
-      case Entry(value) if value >= min && value <= max => Right(impl(List(value)))
+  def validate[A: Buildable](min: Int, max: Int, stringRepr: String): ValidatedTo[A] = Kleisli { field =>
+    (field match {
+      case Entry(value) if value >= min && value <= max => Right(List(value))
       case Asterisk(maybeStep) =>
-        Right(impl(maybeStep.map(step => (min to max).toList.filter(a => a % step == 0 || a == 0)).getOrElse((min to max).toList)))
+        Right(maybeStep.map(step => (min to max).toList.filter(a => a % step == 0 || a == 0)).getOrElse((min to max).toList))
       case Range(start, end, maybeStep) if start >= min && end <= max =>
-        Right(impl(maybeStep.map(step => (start to end).toList.filter(a => a % step == 0 || a == 0)).getOrElse((start to end).toList)))
-      case l@ListOfEntries(entries) =>
-        if (entries.map(_.value).forall(e => e >= min && e <= max)) Right(impl(entries.map(_.value).distinct.sorted))
-        else Left(IllegalValue(s"$l is not a valid $stringRepr value"))
-      case ListOfRanges(ranges) =>
-        if (ranges.forall(r => r.start >= min && r.end <= max))
-          Right(impl(ranges.flatMap(range =>
-            range.maybeStep.map(step => (range.start to range.end).toList.filter(a => a % step == 0 || a == 0)).getOrElse((range.start to range.end).toList)
-          ).distinct.sorted))
-        else Left(IllegalValue(s"${ranges.mkString(",")} is not a valid $stringRepr value"))
+        Right(maybeStep.map(step => (start to end).toList.filter(a => a % step == 0 || a == 0)).getOrElse((start to end).toList))
+      case ListOfEntries(entries) if entries.map(_.value).forall(e => e >= min && e <= max) =>
+        Right(entries.map(_.value).distinct.sorted)
+      case ListOfRanges(ranges) if ranges.forall(r => r.start >= min && r.end <= max) =>
+        Right(ranges.flatMap(range =>
+          range.maybeStep.map(step => (range.start to range.end).toList.filter(a => a % step == 0 || a == 0)).getOrElse((range.start to range.end).toList)
+        ).distinct.sorted)
       case illegalValue => Left(IllegalValue(s"$illegalValue is not a valid $stringRepr value"))
-    }
-  })
+    }).map(Buildable[A].build)
+  }
+
 
   /*
   * validates the minute field length
