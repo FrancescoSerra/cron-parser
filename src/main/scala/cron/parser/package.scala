@@ -4,8 +4,12 @@ import cats.data.{Kleisli, NonEmptyList, ValidatedNel}
 
 package object parser {
   /* domain entities */
-  trait Buildable[T] {
-    def apply(list: List[Int]): T
+  trait Buildable[A] {
+    def build(list: List[Int]): A
+  }
+
+  object Buildable {
+    def apply[A](implicit ba: Buildable[A]): Buildable[A] = ba
   }
 
   type ValidatedTo[A] = Result[FieldType,A]
@@ -41,7 +45,9 @@ package object parser {
   final case class ListOfEntries(list: List[Entry]) extends FieldType {
     override def toString: String = list.mkString(",")
   }
-  final case class ListOfRanges(list: List[Rangeable]) extends FieldType
+  final case class ListOfRanges(list: List[Rangeable]) extends FieldType {
+    override def toString: String = list.mkString(",")
+  }
   final case class LiteralDay(value: String) extends FieldType {
     override def toString: String = value
   }
