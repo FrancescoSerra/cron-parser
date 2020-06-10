@@ -6,6 +6,7 @@ package object parser {
   /* domain entities */
   trait Buildable[A] {
     def build(list: List[Int]): A
+    def name: String
   }
 
   object Buildable {
@@ -62,31 +63,46 @@ package object parser {
     override def toString: String = listOfMinutes.mkString(" ")
   }
   object Minute {
-    implicit val minuteBuildable: Buildable[Minute] = (list: List[Int]) => Minute(list)
+    implicit val minuteBuildable: Buildable[Minute] = new Buildable[Minute] {
+      def build(list: List[Int]): Minute = Minute(list)
+      def name: String = "minute"
+    }
   }
   final case class Hour(listOfHours: List[Int]) extends Field {
     override def toString: String = listOfHours.mkString(" ")
   }
   object Hour {
-    implicit val hourBuildable: Buildable[Hour] = (list: List[Int]) => Hour(list)
+    implicit val hourBuildable: Buildable[Hour] = new Buildable[Hour] {
+      override def build(list: List[Int]): Hour =  Hour(list)
+      override def name: String = "hour"
+    }
   }
   final case class DayOfMonth(listOfDays: List[Int]) extends Field {
     override def toString: String = listOfDays.mkString(" ")
   }
   object DayOfMonth {
-    implicit val dayOfMonthBuildable: Buildable[DayOfMonth] = (list: List[Int]) => DayOfMonth(list)
+    implicit val dayOfMonthBuildable: Buildable[DayOfMonth] = new Buildable[DayOfMonth] {
+      override def build(list: List[Int]): DayOfMonth = DayOfMonth(list)
+      override def name: String = "day of month"
+    }
   }
   final case class Month(listOfMonths: List[Int]) extends Field {
     override def toString: String = listOfMonths.mkString(" ")
   }
   object Month {
-    implicit val monthBuildable: Buildable[Month] = (list: List[Int]) => Month(list)
+    implicit val monthBuildable: Buildable[Month] = new Buildable[Month] {
+      override def build(list: List[Int]): Month = Month(list)
+      override def name: String = "month"
+    }
   }
   final case class DayOfWeek(listOfDays: List[Int]) extends Field {
     override def toString: String = listOfDays.mkString(" ")
   }
   object DayOfWeek {
-    implicit val dayOfWeekBuildable: Buildable[DayOfWeek] = (list: List[Int]) => DayOfWeek(list)
+    implicit val dayOfWeekBuildable: Buildable[DayOfWeek] = new Buildable[DayOfWeek] {
+      override def build(list: List[Int]): DayOfWeek = DayOfWeek(list)
+      override def name: String = "day of week"
+    }
   }
   final case class Command(value: String) extends AnyVal with Field {
     override def toString: String = value
