@@ -51,7 +51,7 @@ package object validation {
 * Either context which represents the failure in validating the values for that field, or the field itself
 * Requires an instance of Buildable in scope, in order to build an instance of the field - represented by the generic type parameter A
 * */
-  def validate[A: Buildable](min: Int, max: Int, stringRepr: String): ValidatedTo[A] = Kleisli { field =>
+  def validate[A: Buildable](min: Int, max: Int): ValidatedTo[A] = Kleisli { field =>
     (field match {
       case Entry(value) if value >= min && value <= max => List(value).asRight
       case Asterisk(maybeStep) =>
@@ -64,7 +64,7 @@ package object validation {
         ranges.flatMap(range =>
           range.maybeStep.map(step => (range.start to range.end).toList.filter(a => a % step == 0 || a == 0)).getOrElse((range.start to range.end).toList)
         ).distinct.sorted.asRight
-      case illegalValue => IllegalValue(s"$illegalValue is not a valid $stringRepr value").asLeft
+      case illegalValue => IllegalValue(s"$illegalValue is not a valid ${Buildable[A].name} value").asLeft
     }).map(Buildable[A].build)
   }
 
@@ -72,15 +72,15 @@ package object validation {
   /*
   * validates the minute field length
   * */
-  val validateMinuteLength: Result[FieldType,Minute] = validate(0,59,"minute")
+  val validateMinuteLength: Result[FieldType,Minute] = validate(0,59)
 
   /*
   * validates the hour field length
   * */
-  val validateHourLength: Result[FieldType,Hour] = validate(0,23,"hour")
+  val validateHourLength: Result[FieldType,Hour] = validate(0,23)
 
   /*
   * validates the day of month field
   * */
-  val validateDayOfMonth: Result[FieldType,DayOfMonth] = validate(1,31,"day of month")
+  val validateDayOfMonth: Result[FieldType,DayOfMonth] = validate(1,31)
 }

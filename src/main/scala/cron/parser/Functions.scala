@@ -43,7 +43,7 @@ object Functions {
       case Left(error) => error.invalidNel[Month]
       case Right(m) => m match {
         case LiteralMonth(month) => Month(listOfMonths.map(_.toString).zipWithIndex.filter { case (m, _) => m.equalsIgnoreCase(month) }.map(_._2 + 1)).validNel
-        case other => validate[Month](1, 12, "month").run(other).toValidatedNel
+        case other => validate[Month](1, 12).run(other).toValidatedNel
       }
     }
   }
@@ -56,7 +56,7 @@ object Functions {
       case Left(error) => error.invalidNel[DayOfWeek]
       case Right(d) => d match {
         case LiteralDay(day) => DayOfWeek(listOfDaysSundayTwice.map(_.toString).zipWithIndex.filter { case (d,_) => d.equalsIgnoreCase(day)}.map(_._2)).validNel
-        case other => validate[DayOfWeek](0,7,"day of week").run(other).toValidatedNel
+        case other => validate[DayOfWeek](0,7).run(other).toValidatedNel
       }
     }
 
