@@ -38,27 +38,15 @@ object Functions {
   /*
   * composes validation of the format and of the month field value
   * */
-  val composeToMonth: String => ValidationResult[Month] = entry => {
-    validateFormat(entry) match {
-      case Left(error) => error.invalidNel[Month]
-      case Right(m) => m match {
-        case LiteralMonth(month) => Month(listOfMonths.map(_.toString).zipWithIndex.filter { case (m, _) => m.equalsIgnoreCase(month) }.map(_._2 + 1)).validNel
-        case other => validate[Month](1, 12).run(other).toValidatedNel
-      }
-    }
-  }
+  val composeToMonth: String => ValidationResult[Month] = entry =>
+    (validateFormat andThen validateMonth).run(entry).toValidatedNel
+
 
   /*
   * composes validation of the format and of the day of week field value
   * */
   val composeToDayOfWeek: String => ValidationResult[DayOfWeek] = entry =>
-    validateFormat(entry) match {
-      case Left(error) => error.invalidNel[DayOfWeek]
-      case Right(d) => d match {
-        case LiteralDay(day) => DayOfWeek(listOfDaysSundayTwice.map(_.toString).zipWithIndex.filter { case (d,_) => d.equalsIgnoreCase(day)}.map(_._2)).validNel
-        case other => validate[DayOfWeek](0,7).run(other).toValidatedNel
-      }
-    }
+    (validateFormat andThen validateDayOfWeek).run(entry).toValidatedNel
 
   /*
   * generates a Validated wrapper around any value in the command field
