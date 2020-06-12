@@ -1,6 +1,6 @@
 package cron.parser
 
-import cats.data.{Kleisli, ValidatedNec}
+import cats.data.Kleisli
 import cats.implicits._
 import RegExes._
 
@@ -46,12 +46,11 @@ package object validation {
 * takes:
 *   - min: Int, the lower bound of the set of possible values for that cron field
 *   - max: Int, the upper bound of the set of possible values for that cron field
-*   - stringRepr: String, the name of the cron field that's being validated
-* returns the validate field
+* returns the validated field
 * Either context which represents the failure in validating the values for that field, or the field itself
 * Requires an instance of Buildable in scope, in order to build an instance of the field - represented by the generic type parameter A
 * */
-  def validate[A: Buildable](min: Int, max: Int): ValidatedTo[A] = Kleisli { field =>
+  def validateValue[A <: Field : Buildable](min: Int, max: Int): ValidatedTo[A] = Kleisli { field =>
     (field match {
       case Entry(value) if value >= min && value <= max => List(value).asRight
       case Asterisk(maybeStep) =>
@@ -68,19 +67,40 @@ package object validation {
     }).map(Buildable[A].build)
   }
 
-
   /*
   * validates the minute field length
   * */
-  val validateMinuteLength: Result[FieldType,Minute] = validate(0,59)
+  val validateMinuteLength: Result[FieldType,Minute] = validateValue(0,59)
 
   /*
   * validates the hour field length
   * */
-  val validateHourLength: Result[FieldType,Hour] = validate(0,23)
+  val validateHourLength: Result[FieldType,Hour] = validateValue(0,23)
 
   /*
   * validates the day of month field
   * */
-  val validateDayOfMonth: Result[FieldType,DayOfMonth] = validate(1,31)
+  val validateDayOfMonth: Result[FieldType,DayOfMonth] = validateValue(1,31)
+
+  /*
+  * validates the month field taking into account the special case of a LiteralMonth,
+  * */
+  val validateMonth: Result[FieldType,Month] = Kleisli { fieldType =>
+    val validateMonthPF: PartialFunction[FieldType,Either[Error,Month]] = {
+      case LiteralMonth(month) =>
+        Month(listOfMonths.map(_.toString).zipWithIndex.filter { case (m, _) => m.equalsIgnoreCase(month) }.map(_._2 + 1)).asRight
+    }
+    validateMonthPF applyOrElse(fieldType,validateValue[Month](1,12).run)
+  }
+
+
+  /*
+  * validates the day of the week field taking into account the special case of a LiteralDay
+  * */
+  val validateDayOfWeek: Result[FieldType,DayOfWeek] = Kleisli { fieldType =>
+    val validateDayOfWeekPF: PartialFunction[FieldType,Either[Error,DayOfWeek]] = {
+      case LiteralDay(day) => DayOfWeek(listOfDaysSundayTwice.map(_.toString).zipWithIndex.filter { case (d,_) => d.equalsIgnoreCase(day)}.map(_._2)).asRight
+    }
+    validateDayOfWeekPF applyOrElse(fieldType,validateValue[DayOfWeek](0,7).run)
+  }
 }
