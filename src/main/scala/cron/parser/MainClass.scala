@@ -12,8 +12,8 @@ case object ErrorResult extends RunResult
 class MainClass extends IOApp {
   type Compound = Either[String,NonEmptyList[(String,Field)]]
 
-  val translate: Option[String] => Compound = input =>
-    input.map(line => mainFunction(line).map(cronLine => {
+  val translate: Option[String] => Compound = _.map(line =>
+    mainFunction(line).map(cronLine => {
       import cronLine._
       NonEmptyList.of(
         ("minute", minute),
@@ -25,12 +25,10 @@ class MainClass extends IOApp {
       )}
     ).leftMap(_.toList.mkString(","))).getOrElse("Please provide a cron line to interpret".asLeft)
 
-  val printRes: Compound => IO[RunResult] = compound =>
-    compound.map { vals =>
-      vals.traverse { case (name, field) =>
+  val printRes: Compound => IO[RunResult] = _.map(_.traverse { case (name, field) =>
         IO(printf("%-14s %s\n", name, field))
       } *> IO.pure(SuccessResult)
-    }.valueOr { err =>
+    ).valueOr { err =>
       IO(println(err)) *> IO.pure(ErrorResult)
     }
 
